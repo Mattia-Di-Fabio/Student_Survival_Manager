@@ -71,7 +71,7 @@ This makes the Panic Score grow faster when several important tasks are active a
 - *Given* the application contains active and completed tasks, *when* the student opens the dashboard, *then* the number of active and completed tasks is displayed.
 - *Given* there are 3 active tasks and 2 completed tasks, *when* the dashboard is displayed, *then* it shows `Active tasks: 3` and `Completed tasks: 2`.
 - *Given* active tasks exist, *when* the dashboard is displayed, *then* the Base Panic Points, Overall Panic Score and Panic Level are displayed.
-- *Given* no active tasks exist, *when* the dashboard is displayed, *then* the Panic Score is `0.00` and the Panic Level is `NO PANIC`.
+- *Given* no active tasks exist, *when* the dashboard is displayed, *then* the Panic Score is `0.00` and the Panic Level is `NO PANIC 😎`.
 
 ---
 
@@ -157,7 +157,6 @@ This makes the Panic Score grow faster when several important tasks are active a
 **Acceptance criteria**
 
 - *Given* a task has a difficulty value, *when* its details are displayed, *then* the difficulty is shown.
-- *Given* the student enters a difficulty lower than `1` or higher than `5`, *when* the value is validated, *then* the application rejects the value.
 
 ---
 
@@ -211,7 +210,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 - *Given* a task is completed, *when* the dashboard is displayed, *then* the active-task count decreases and the completed-task count increases.
 - *Given* a completed task previously contributed Panic Points, *when* the Panic Score is recalculated, *then* those Panic Points are removed.
 - *Given* the number of active tasks decreases, *when* the Panic Score is recalculated, *then* the concurrency effect is recalculated.
-- *Given* a task is successfully completed, *when* the operation finishes, *then* `Task marked as completed.` is displayed.
+- *Given* a task is successfully completed, *when* the operation finishes, *then* `Task marked as completed ✅.` is displayed.
 
 ---
 
@@ -223,12 +222,12 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 - *Given* the main menu is displayed, *when* the student selects the exit option, *then* the application closes.
 - *Given* tasks have been created or modified, *when* the application is closed and started again, *then* the saved tasks are still available.
-- *Given* the exit option is selected, *when* the application closes, *then* the message `Goodbye.` is displayed.
+- *Given* the exit option is selected, *when* the application closes, *then* the message `Goodbye 👋` is displayed.
 
 **Example output**
 
 ```text
-Goodbye.
+Goodbye 👋
 ```
 
 ---
