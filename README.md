@@ -214,20 +214,20 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-12: Exit the application
+### US-12: Saving the result as a PDF
 
-**As a** student, **I want** to close the application via the main menu, **so that** I can finish using the program safely.
+**As a** student, **I want** to save the results as a PDF, **so that** I can see an overview after closing the application.
 
 **Acceptance criteria**
 
-- *Given* the main menu is displayed, *when* the student selects the exit option, *then* the application closes.
-- *Given* tasks have been created or modified, *when* the application is closed and started again, *then* the saved tasks are still available.
-- *Given* the exit option is selected, *when* the application closes, *then* the message `Goodbye 👋` is displayed.
+- * Given the results are displayed, when the student selects the option to save as PDF, then a PDF file is created.
+- * Given the student saves the results as a PDF, when the PDF is opened, then it contains an overview of the results.
+- * Given the PDF has been successfully created, when the saving process is completed, then the message `Successfully saved to PDF` is displayed.
 
 **Example output**
 
 ```text
-Goodbye 👋
+
 ```
 
 ---
