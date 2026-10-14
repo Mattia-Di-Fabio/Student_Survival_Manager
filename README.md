@@ -8,11 +8,20 @@ Instead of only showing a normal to-do list, the application calculates **Panic 
 
 ## 🎯 Problem
 
-A student struggles to organize the multiple tasks assigned and fails exams :)
+Students often have several assignments, projects and exams at the same time. Some tasks are more difficult than others, and deadlines can be very close together. This makes it difficult to decide what to work on first, especially when several important tasks compete for the student's time.
+
+A normal to-do list shows what needs to be done, but does not help much with prioritization. Student Survival Manager combines task difficulty, deadlines and the number of active tasks to give students a clearer overview of their workload.
 
 ## 🧩 Scenario
 
-Student Survival Manager manages students' workload by tracking tasks, checking deadlines and using **Panic Points** to see which tasks are the most urgent.
+A student has a programming assignment due tomorrow, a mathematics exercise due in three days and an economics report due next week.
+
+1. The student opens Student Survival Manager and adds the three tasks with their descriptions, deadlines, difficulties and university modules.
+2. The student checks the dashboard to see the number of active tasks and the current Panic Score and Panic Level.
+3. The student opens the prioritized list to see which task needs attention first.
+4. The student filters tasks by module or upcoming deadline and opens a task to check its details.
+5. After finishing the programming assignment, the student marks it as completed. The dashboard and prioritized list update automatically.
+6. The student exports a text report. When the application is opened again, the saved tasks are loaded from the file.
 
 ## 👤 User Roles
 
@@ -58,6 +67,27 @@ Panic Score = 8 + 3.4 = 11.4
 
 This makes the Panic Score grow faster when several important tasks are active at the same time, while low-priority tasks have a smaller effect.
 
+### Panic Level boundaries
+
+| Panic Score | Panic Level |
+| --- | --- |
+| `0` | `NO PANIC 😎` |
+| Greater than `0` and below `5` | `LOW 🙂` |
+| From `5` (included) to below `15` | `MEDIUM 😐` |
+| From `15` (included) to below `30` | `HIGH 😰` |
+| `30` or more | `CRITICAL 🚨` |
+
+For the example above, a Panic Score of `11.40` gives a `MEDIUM` Panic Level. Calculations use full precision; results are rounded to two decimal places only when displayed.
+
+### Overdue tasks
+
+```text
+Days Left = max(Deadline - Today in whole days, 0)
+Panic Points = Difficulty / √(Days Left + 1)
+```
+
+**Chosen rule:** An overdue task receives the same Panic Points as a task due today. For example, a difficulty `5` task due yesterday has `5.00` points. This keeps the original formula unchanged. Overdue tasks are clearly marked `OVERDUE` and appear before tasks due today when their Panic Points are equal. Completed tasks do not contribute to the Panic Score.
+
 ---
 
 ## 📋 User Stories
@@ -72,19 +102,19 @@ This makes the Panic Score grow faster when several important tasks are active a
 - *Given* there are 3 active tasks and 2 completed tasks, *when* the dashboard is displayed, *then* it shows `Active tasks: 3` and `Completed tasks: 2`.
 - *Given* active tasks exist, *when* the dashboard is displayed, *then* the Base Panic Points, Overall Panic Score and Panic Level are displayed.
 - *Given* no active tasks exist, *when* the dashboard is displayed, *then* the Panic Score is `0.00` and the Panic Level is `NO PANIC 😎`.
+- *Given* an Overall Panic Score of `15.00`, *when* the dashboard is displayed, *then* the Panic Level is `HIGH 😰`.
 
 ---
 
-### US-02: See current panic level
+### US-02: View completed tasks
 
-**As a** student, **I want** to see my "panic level", **so that** I can quickly understand my current workload.
+**As a** student, **I want** to see my completed tasks, **so that** I can keep track of what I have already finished.
 
 **Acceptance criteria**
 
-- *Given* active tasks exist, *when* the Panic Score is calculated, *then* the Panic Points of all active tasks are added.
-- *Given* multiple active tasks exist, *when* the Panic Score is calculated, *then* the concurrency effect is added.
-- *Given* a Panic Score has been calculated, *when* the result is displayed, *then* both the numerical Panic Score and Panic Level are shown.
-- *Given* a task is completed, *when* the Panic Score is recalculated, *then* that task no longer contributes to the Base Panic Points or number of active tasks.
+- *Given* completed and active tasks exist, *when* the student opens the completed task list, *then* only completed tasks are displayed.
+- *Given* completed tasks exist, *when* the list is displayed, *then* each task's description, module and deadline are shown.
+- *Given* no completed tasks exist, *when* the student opens the list, *then* the message `No completed tasks.` is displayed.
 
 ---
 
@@ -94,24 +124,25 @@ This makes the Panic Score grow faster when several important tasks are active a
 
 **Acceptance criteria**
 
-- *Given* the student selects the option to add a task, *when* a valid description, deadline and difficulty are entered, *then* a new task is created.
+- *Given* the student selects the option to add a task, *when* a valid description, deadline and difficulty are entered, *then* a new task is created with a unique ID.
 - *Given* a task is created, *when* it is added to the application, *then* its initial status is `active`.
+- *Given* a student enters a university module, *when* the task is created, *then* the module is saved with the task; if no module is entered, it is set to `Unassigned`.
 - *Given* the description is empty, *when* the student tries to create the task, *then* the task is not created and an error message is displayed.
 - *Given* difficulty is lower than `1` or higher than `5`, *when* the student tries to create the task, *then* the value is rejected.
 - *Given* the deadline is not a valid date, *when* the student tries to create the task, *then* the task is not created.
 
 ---
 
-### US-04: Save tasks to a file
+### US-04: Search tasks
 
-**As a** student, **I want** my tasks to be saved, **so that** I do not lose them.
+**As a** student, **I want** to search for a task by its description, **so that** I can quickly find a particular assignment.
 
 **Acceptance criteria**
 
-- *Given* a new task is created, *when* it is saved, *then* its description, deadline, difficulty and status are written to a file.
-- *Given* tasks were saved during a previous session, *when* the application starts again, *then* the saved tasks are loaded.
-- *Given* a task is edited, *when* the changes are confirmed, *then* the stored information is updated.
-- *Given* a task is marked as completed, *when* the application is closed and restarted, *then* the task remains completed.
+- *Given* tasks exist, *when* the student enters a word that appears in a task description, *then* all matching tasks are displayed.
+- *Given* a task is completed, *when* its description matches the search, *then* it is included and its status is shown.
+- *Given* the student uses uppercase or lowercase letters, *when* searching, *then* the results are the same.
+- *Given* no tasks match the search, *when* it is performed, *then* `No matching tasks.` is displayed.
 
 ---
 
@@ -123,40 +154,46 @@ This makes the Panic Score grow faster when several important tasks are active a
 
 - *Given* multiple active tasks exist, *when* the prioritized task list is opened, *then* all active tasks are displayed.
 - *Given* two tasks have different Panic Points, *when* the list is displayed, *then* the task with more Panic Points appears first.
+- *Given* two tasks have equal Panic Points, *when* the list is displayed, *then* the task with the earlier deadline appears first.
 - *Given* a task has been completed, *when* the prioritized list is displayed, *then* that task is not included.
 - *Given* no active tasks exist, *when* the prioritized list is opened, *then* the message `No active tasks.` is displayed.
 
 ---
 
-### US-06: View task description
+### US-06: View task details
 
-**As a** student, **I want** to see the task description, **so that** I can check what the task is about.
+**As a** student, **I want** to see a task's description, deadline and difficulty, **so that** I can check what the task is about and how much time I have left.
 
 **Acceptance criteria**
 
-- *Given* an existing task is selected, *when* the student opens its details, *then* the task description is displayed.
+- *Given* an existing task is selected, *when* the student opens its details, *then* the task description, module, deadline, difficulty, status and Panic Points are displayed.
+- *Given* the deadline has already passed and the task is active, *when* the task is viewed, *then* the application indicates that the task is `OVERDUE`.
 - *Given* the student selects a task that does not exist, *when* the application searches for it, *then* the message `Task not found.` is displayed.
 
 ---
 
-### US-07: View task deadline
+### US-07: Filter tasks by module
 
-**As a** student, **I want** to see the task deadline, **so that** I can check how much time I have left.
+**As a** student, **I want** to filter tasks by university module, **so that** I can focus on one subject at a time.
 
 **Acceptance criteria**
 
-- *Given* an existing task has a deadline, *when* the student opens the task details, *then* the deadline is displayed.
-- *Given* the deadline has already passed, *when* the task is viewed, *then* the application indicates that the task is overdue.
+- *Given* active tasks from different modules exist, *when* the student selects a module, *then* only active tasks from that module are displayed.
+- *Given* two tasks belong to the same module, *when* that module is selected, *then* both tasks are shown.
+- *Given* no active tasks belong to the selected module, *when* the filter is applied, *then* `No matching tasks.` is displayed.
 
 ---
 
-### US-08: View difficulty level of the task
+### US-08: View overdue tasks
 
-**As a** student, **I want** to see the task difficulty level, **so that** I can check the effort that I have to put into it.
+**As a** student, **I want** to see a list of overdue tasks, **so that** I know which deadlines I have missed.
 
 **Acceptance criteria**
 
-- *Given* a task has a difficulty value, *when* its details are displayed, *then* the difficulty is shown.
+- *Given* an active task has a deadline before today, *when* the student opens the overdue task list, *then* the task appears with the label `OVERDUE`.
+- *Given* a task is due today, *when* the overdue list is displayed, *then* it is not considered overdue.
+- *Given* an overdue task is completed, *when* the overdue list is opened, *then* that task is not included.
+- *Given* no overdue tasks exist, *when* the student opens the list, *then* `No overdue tasks.` is displayed.
 
 ---
 
@@ -169,33 +206,22 @@ This makes the Panic Score grow faster when several important tasks are active a
 - *Given* an existing task is selected, *when* the student changes its description, *then* the new description replaces the previous one.
 - *Given* an existing task is selected, *when* the student changes its deadline, *then* the new deadline is saved.
 - *Given* an existing task is selected, *when* the student changes its difficulty, *then* the new difficulty is saved.
+- *Given* an existing task is selected, *when* the student changes its university module, *then* the new module is saved.
+- *Given* invalid information is entered, *when* the student tries to save the changes, *then* the invalid change is rejected.
 - *Given* a task has been successfully edited, *when* the operation is completed, *then* `Task updated successfully.` is displayed.
 
 ---
 
-### US-10: Calculate panic points
+### US-10: Filter tasks by upcoming deadline
 
-**As a** student, **I want** the application to calculate panic points, **so that** I know how urgent my tasks are.
+**As a** student, **I want** to see tasks due within the next few days, **so that** I can plan my upcoming work.
 
 **Acceptance criteria**
 
-- Each active task receives a numerical Panic Points value.
-- Panic Points depend only on task difficulty and the exact number of days remaining before the deadline.
-- Panic Points are rounded to two decimal places when displayed.
-
-The calculation uses:
-
-```text
-Days Left = max(Deadline - Today, 0)
-
-Panic Points = Difficulty / √(Days Left + 1)
-```
-
-- *Given* difficulty is `5` and the task is due today, *when* Panic Points are calculated, *then* the result is `5.00`.
-- *Given* difficulty is `5` and the task is due in 1 day, *when* Panic Points are calculated, *then* the result is `3.54`.
-- *Given* difficulty is `5` and the task is due in 14 days, *when* Panic Points are calculated, *then* the result is `1.29`.
-- *Given* a task is overdue, *when* Panic Points are calculated, *then* Days Left is treated as `0`.
-- *Given* a completed task exists, *when* the current workload is calculated, *then* the completed task is not included.
+- *Given* active tasks with different deadlines exist, *when* the student chooses the next `7` days, *then* only tasks due from today through the next seven days are displayed.
+- *Given* a task is completed or overdue, *when* the upcoming deadline filter is applied, *then* it is not included.
+- *Given* the student enters a negative or non-integer number of days, *when* the filter is applied, *then* an error message is displayed.
+- *Given* no tasks are due within the selected period, *when* the filter is applied, *then* `No matching tasks.` is displayed.
 
 ---
 
@@ -214,29 +240,31 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-12: Saving the result as a PDF
+### US-12: Save the results as a text report
 
-**As a** student, **I want** to save the results as a PDF, **so that** I can see an overview after closing the application.
+**As a** student, **I want** to save the results as a text report, **so that** I can see an overview after closing the application.
 
 **Acceptance criteria**
 
-- * Given the results are displayed, when the student selects the option to save as PDF, then a PDF file is created.
-- * Given the student saves the results as a PDF, when the PDF is opened, then it contains an overview of the results.
-- * Given the PDF has been successfully created, when the saving process is completed, then the message `Successfully saved to PDF` is displayed.
+- *Given* the student selects the option to export a report, *when* the report is generated, *then* a `.txt` file is created.
+- *Given* the report is opened, *when* the student reads it, *then* it contains the report date, the active and completed task counts, Base Panic Points, Overall Panic Score, Panic Level and a prioritized list of active tasks with their descriptions, modules, deadlines, difficulties, Panic Points and overdue status.
+- *Given* no active tasks exist, *when* the report is exported, *then* it shows `0` active tasks, a Panic Score of `0.00` and `NO PANIC`.
+- *Given* the report has been saved successfully, *when* the operation finishes, *then* `Report saved successfully.` is displayed.
 
-**Example output**
-
-```text
-
-```
-
+A simple **TXT report** is the required output
 ---
 
 ## 🛠️ Use Cases
 
 - Show Dashboard
 - Create Task
+- View completed tasks
 - Show task's description, deadline and difficulty
+- Search and filter tasks
+- Show prioritized and overdue tasks
+- Edit a task
 - Mark task as completed
 - Calculate Panic Points
 - Display "Panic Level"
+- Export a text report
+
