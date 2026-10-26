@@ -92,7 +92,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ## 📋 User Stories
 
-### US-01: View the dashboard
+### US-01: View the dashboard   --    Iga Gawronska
 
 **As a** student, **I want** to see a summary of my current workload, **so that** I can understand my situation immediately.
 
@@ -106,7 +106,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-02: View completed tasks
+### US-02: View completed tasks   --    Iga Gawronska
 
 **As a** student, **I want** to see my completed tasks, **so that** I can keep track of what I have already finished.
 
@@ -118,7 +118,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-03: Add tasks
+### US-03: Add tasks   --    Iga Gawronska
 
 **As a** student, **I want** to add a task with a description, **so that** I can keep track of my university work.
 
@@ -133,7 +133,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-04: Search tasks
+### US-04: Search tasks   --    Catia Lopes
 
 **As a** student, **I want** to search for a task by its description, **so that** I can quickly find a particular assignment.
 
@@ -146,7 +146,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-05: Show the prioritized tasks
+### US-05: Show the prioritized tasks   --    Catia Lopes
 
 **As a** student, **I want** to prioritize my tasks, **so that** I can see them organized.
 
@@ -160,7 +160,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-06: View task details
+### US-06: View task details   --    Catia Lopes
 
 **As a** student, **I want** to see a task's description, deadline and difficulty, **so that** I can check what the task is about and how much time I have left.
 
@@ -172,7 +172,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-07: Filter tasks by module
+### US-07: Filter tasks by module   --    Mattia Di Fabio
 
 **As a** student, **I want** to filter tasks by university module, **so that** I can focus on one subject at a time.
 
@@ -184,7 +184,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-08: View overdue tasks
+### US-08: View overdue tasks   --    Mattia Di Fabio
 
 **As a** student, **I want** to see a list of overdue tasks, **so that** I know which deadlines I have missed.
 
@@ -197,7 +197,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-09: Edit a task
+### US-09: Edit a task   --    Mattia Di Fabio
 
 **As a** student, **I want** to edit the task, **so that** I can correct or update its information.
 
@@ -212,7 +212,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-10: Filter tasks by upcoming deadline
+### US-10: Filter tasks by upcoming deadline   --    Lirim Emërllahu
 
 **As a** student, **I want** to see tasks due within the next few days, **so that** I can plan my upcoming work.
 
@@ -225,7 +225,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-11: Mark a task as completed
+### US-11: Mark a task as completed   --    Lirim Emërllahu
 
 **As a** student, **I want** to mark the task as completed, **so that** I can keep track of my progress.
 
@@ -240,7 +240,7 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 ---
 
-### US-12: Save the results as a text report
+### US-12: Save the results as a text report   --    Lirim Emërllahu
 
 **As a** student, **I want** to save the results as a text report, **so that** I can see an overview after closing the application.
 
