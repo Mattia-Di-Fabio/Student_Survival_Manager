@@ -1,10 +1,11 @@
 from shutil import get_terminal_size
 
-from src.cli import task_forms
+from src.cli import task_forms, task_lists
 from src.storage import load_tasks
 
 
 MENU = {
+    "2": ("View completed tasks", task_lists.show_completed),
     "3": ("Add a task", task_forms.add_task),
 }
 
