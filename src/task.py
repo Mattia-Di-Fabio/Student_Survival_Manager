@@ -68,3 +68,12 @@ def next_task_id(tasks):
         if task["id"] > largest:
             largest = task["id"]
     return largest + 1
+
+
+def find_task(tasks, task_id):
+    selected = None
+    for task in tasks:
+        if task["id"] == task_id:
+            selected = task
+            break
+    return selected

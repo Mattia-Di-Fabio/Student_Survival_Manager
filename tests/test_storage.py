@@ -3,7 +3,7 @@ import os
 import unittest
 from tempfile import TemporaryDirectory
 
-from src.storage import load_tasks
+from src.storage import load_tasks, save_task
 from tests.examples import example_task
 
 
@@ -17,6 +17,18 @@ class StorageTests(unittest.TestCase):
     def test_first_start_has_an_empty_list(self):
         self.assertEqual(load_tasks(self.path), [])
 
+    def test_add_then_edit_and_reload(self):
+        tasks = []
+        first = example_task(description="Préparer le résumé")
+        second = example_task(2, status="completed")
+        added = save_task(tasks, first, path=self.path)
+        self.assertEqual(added, first)
+        save_task(tasks, second, path=self.path)
+        edited = example_task(description="Final résumé", difficulty=5)
+        saved = save_task(tasks, edited, first, path=self.path)
+        self.assertEqual(saved, edited)
+        self.assertEqual(tasks, [edited, second])
+        self.assertEqual(load_tasks(self.path), tasks)
 
     def test_invalid_file_is_reported_and_preserved(self):
         for content in ("broken", "{}", "[{}]", "[1]"):
@@ -40,3 +52,14 @@ class StorageTests(unittest.TestCase):
                     json.dump(records, file)
                 with self.assertRaises(ValueError):
                     load_tasks(self.path)
+
+    def test_failed_save_preserves_the_previous_task(self):
+        tasks = []
+        original = example_task()
+        save_task(tasks, original, path=self.path)
+        os.mkdir(self.temporary_file)
+        edited = example_task(description="Different")
+        with self.assertRaises(OSError):
+            save_task(tasks, edited, original, path=self.path)
+        self.assertEqual(tasks, [original])
+        self.assertEqual(load_tasks(self.path), [original])

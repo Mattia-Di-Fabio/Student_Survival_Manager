@@ -1,7 +1,7 @@
 
 from src.deadline import parse_deadline, parse_semester_deadline
 from src.storage import save_task
-from src.task import MODULES, next_task_id, read_description, read_difficulty, task_record
+from src.task import MODULES, find_task, next_task_id, read_description, read_difficulty, task_record
 
 
 def read_module_choice(prompt):
@@ -27,6 +27,19 @@ def read_module(current=None):
     if current is not None:
         return current
     return "Unassigned"
+
+
+def select_task(tasks):
+    selected = None
+    if tasks:
+        for task in tasks:
+            print(f"#{task['id']} {task['description']} [{task['status']}]")
+        choice = input("Task ID: ").strip()
+        if choice.isdecimal():
+            selected = find_task(tasks, int(choice))
+    if selected is None:
+        raise ValueError("Task not found.")
+    return selected
 
 
 def read_field(label, current=None):
@@ -78,3 +91,10 @@ def add_task(tasks):
     task = read_task(task_id)
     saved = save_task(tasks, task)
     return f"Task added successfully. ID: {saved['id']}\nYou're ready to get started! ✨"
+
+
+def edit_task(tasks):
+    previous = select_task(tasks)
+    edited = read_task(previous["id"], previous)
+    saved = save_task(tasks, edited, previous)
+    return f"Task updated successfully.\n#{saved['id']} {saved['description']}"
