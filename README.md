@@ -178,9 +178,9 @@ Panic Points = Difficulty / √(Days Left + 1)
 
 **Acceptance criteria**
 
-- *Given* active tasks from different modules exist, *when* the student selects a module, *then* only active tasks from that module are displayed.
+- *Given* tasks from different modules exist, *when* the student selects a module by number, *then* only tasks from that module are displayed, including active and completed tasks.
 - *Given* two tasks belong to the same module, *when* that module is selected, *then* both tasks are shown.
-- *Given* no active tasks belong to the selected module, *when* the filter is applied, *then* `No matching tasks.` is displayed.
+- *Given* no tasks belong to the selected module, *when* the filter is applied, *then* `No matching tasks.` is displayed.
 
 ---
 

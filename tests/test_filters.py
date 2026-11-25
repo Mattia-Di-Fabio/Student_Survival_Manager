@@ -1,6 +1,6 @@
 import unittest
 
-from src.filters import tasks_with_status
+from src.filters import tasks_for_module, tasks_with_status
 from tests.examples import example_task
 
 
@@ -15,3 +15,9 @@ class FilterTests(unittest.TestCase):
 
     def test_completed_list_contains_only_finished_tasks(self):
         self.assertEqual(tasks_with_status(self.tasks, "completed"), [self.finished])
+
+
+    def test_module_filter_includes_all_tasks_in_the_module(self):
+        matches = tasks_for_module(self.tasks, "science")
+        self.assertEqual(matches, [self.late, self.week, self.finished])
+        self.assertEqual(tasks_for_module(self.tasks, "Economics"), [])

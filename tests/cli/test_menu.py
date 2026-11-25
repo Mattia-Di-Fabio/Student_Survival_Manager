@@ -1,3 +1,4 @@
+import json
 import unittest
 from contextlib import redirect_stdout
 from io import StringIO
@@ -6,6 +7,7 @@ from unittest.mock import patch
 
 from src.cli.menu import run
 from src.storage import load_tasks
+from tests.examples import example_task
 
 
 class MenuTests(unittest.TestCase):
@@ -46,6 +48,29 @@ class MenuTests(unittest.TestCase):
         self.assertIn("Task added successfully. ID: 1", output)
         self.assertEqual(load_tasks()[0]["module"], "Digital Business")
 
+    def test_filter_uses_the_add_menu_order_for_all_five_modules(self):
+        modules = ["Math", "PoM", "Digital Business", "Statistics", "Programming"]
+        old_names = ["math", "pom", "digital business", "STATISTICS", "programming"]
+        tasks = []
+        for number, old_name in enumerate(old_names, 1):
+            task = example_task(number, f"Assignment {number}")
+            task["module"] = old_name
+            tasks.append(task)
+        with open(f"{self.folder}/tasks.json", "w", encoding="utf-8") as file:
+            json.dump(tasks, file)
+
+        for number, module in enumerate(modules, 1):
+            with self.subTest(module=module):
+                output = self.run_menu(["7", str(number), "0"])
+                self.assertIn(f"  {number}. {module}", output)
+                self.assertIn(f"Assignment {number} [active]", output)
+                self.assertIn(f"Module: {module} |", output)
+                self.assertEqual(output.count("[active]"), 1)
+
+        output = self.run_menu(["7", "digital business", "6", "", "0"])
+        self.assertEqual(output.count("Please choose a number from 1 to 5."), 2)
+        self.assertNotIn("Assignment 3 [active]", output)
+        self.assertIn("Filter cancelled.", output)
 
     def test_adding_task_retries_only_the_deadline_until_it_is_valid(self):
         answers = [
