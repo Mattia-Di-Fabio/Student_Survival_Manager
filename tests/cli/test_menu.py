@@ -68,6 +68,15 @@ class MenuTests(unittest.TestCase):
         self.assertEqual(tasks[0]["deadline"], "2027-01-15")
 
 
+    def test_write_failure_returns_to_the_dashboard_without_confirming(self):
+        answers = ["3", "Read", "2026-10-21", "2", "1", "1", "0"]
+        with patch("src.storage.os.replace", side_effect=PermissionError("Access denied")):
+            output = self.run_menu(answers)
+        self.assertIn("Could not write the file: Access denied", output)
+        self.assertNotIn("Task added successfully.", output)
+        self.assertEqual(output.count("📚 Active tasks           | 0"), 2)
+        self.assertEqual(load_tasks(), [])
+
     def test_interrupted_form_exits_without_saving(self):
         for interruption in (EOFError(), KeyboardInterrupt()):
             with self.subTest(interruption=interruption):

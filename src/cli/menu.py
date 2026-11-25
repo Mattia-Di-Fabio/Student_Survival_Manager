@@ -1,10 +1,33 @@
+from datetime import date
 from shutil import get_terminal_size
 
 from src.cli import task_forms, task_lists
+from src.overview import dashboard_lines
 from src.storage import load_tasks
 
 
+def show_dashboard(tasks):
+    today = date.today()
+    lines = dashboard_lines(tasks, today)
+    icons = ["📚", "✅", "🧮", "📊", "🚦"]
+    border = "+" + "=" * 44 + "+"
+    separator = "+---------------------------+----------------+"
+    title = "Your study status at a glance"
+    table = [border, f"|{title:^44}|", border]
+    for icon, line in zip(icons, lines):
+        label, value = line.split(": ", 1)
+        if label == "Panic Level":
+            value_width = 13
+        else:
+            value_width = 14
+        table.append(f"| {icon} {label:<22} | {value:<{value_width}} |")
+        table.append(separator)
+    table[-1] = border
+    return "\n".join(table)
+
+
 MENU = {
+    "1": ("View dashboard", show_dashboard),
     "2": ("View completed tasks", task_lists.show_completed),
     "3": ("Add a task", task_forms.add_task),
 }
@@ -40,6 +63,8 @@ def run_choice(choice, tasks):
 
 def menu_loop(tasks):
     print("\n🎓 Welcome to Student Survival Manager!")
+    print("\n--- Your dashboard ---")
+    print(show_dashboard(tasks))
 
     show_menu(get_terminal_size().columns)
     prompt = "\nYour choice (0–12, Enter for menu): "
