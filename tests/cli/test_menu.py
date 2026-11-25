@@ -1,0 +1,77 @@
+import unittest
+from contextlib import redirect_stdout
+from io import StringIO
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
+
+from src.cli.menu import run
+from src.storage import load_tasks
+
+
+class MenuTests(unittest.TestCase):
+    def setUp(self):
+        folder = TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.folder = folder.name
+        location = patch("src.storage.PROJECT_FOLDER", self.folder)
+        location.start()
+        self.addCleanup(location.stop)
+
+    def run_menu(self, answers):
+        output = StringIO()
+        with redirect_stdout(output), patch("builtins.input", side_effect=answers):
+            run()
+        return output.getvalue()
+
+
+    def test_damaged_data_is_reported_on_startup(self):
+        path = f"{self.folder}/tasks.json"
+        with open(path, "w", encoding="utf-8") as file:
+            file.write("broken")
+        output = self.run_menu(["0"])
+        self.assertIn("Could not load tasks:", output)
+        with open(path, encoding="utf-8") as file:
+            self.assertEqual(file.read(), "broken")
+
+    def test_invalid_difficulty_stops_before_the_module_and_creates_nothing(self):
+        output = self.run_menu(["3", "Read", "2026-10-21", "6", "0"])
+        self.assertIn("Difficulty must be a whole number from 1 to 5.", output)
+        self.assertNotIn("Task added successfully.", output)
+        self.assertEqual(load_tasks(), [])
+
+    def test_module_choice_retries_and_is_saved(self):
+        answers = ["3", "Read", "2026-10-21", "2", "7", "3", "0"]
+        output = self.run_menu(answers)
+        self.assertIn("Please choose a number from 1 to 5.", output)
+        self.assertIn("Task added successfully. ID: 1", output)
+        self.assertEqual(load_tasks()[0]["module"], "Digital Business")
+
+
+    def test_adding_task_retries_only_the_deadline_until_it_is_valid(self):
+        answers = [
+            "3", "Read", "2026-09-31", "30/09/2026", "2025-11-25", "2027-01-16",
+            "2027-01-15", "2", "2", "0",
+        ]
+        output = StringIO()
+        with redirect_stdout(output), patch("builtins.input", side_effect=answers) as inputs:
+            run()
+        prompts = [call.args[0] for call in inputs.call_args_list]
+        self.assertEqual(prompts.count("Description: "), 1)
+        self.assertEqual(prompts.count("Deadline (YYYY-MM-DD): "), 5)
+        self.assertEqual(output.getvalue().count("Enter a valid deadline"), 2)
+        self.assertEqual(output.getvalue().count("2026-09-01 to 2027-01-15"), 2)
+        self.assertIn("Task added successfully. ID: 1", output.getvalue())
+
+        tasks = load_tasks()
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["description"], "Read")
+        self.assertEqual(tasks[0]["deadline"], "2027-01-15")
+
+
+    def test_interrupted_form_exits_without_saving(self):
+        for interruption in (EOFError(), KeyboardInterrupt()):
+            with self.subTest(interruption=interruption):
+                output = self.run_menu(["3", "Draft", interruption])
+                self.assertIn("Goodbye!", output)
+                self.assertNotIn("Task added successfully.", output)
+                self.assertEqual(load_tasks(), [])
