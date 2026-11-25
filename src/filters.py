@@ -1,3 +1,4 @@
+from src.deadline import days_until
 from src.task import normalize_module
 
 
@@ -16,3 +17,11 @@ def tasks_for_module(tasks, module):
         if task["module"].casefold() == module:
             matches.append(task)
     return matches
+
+
+def overdue_tasks(tasks, today):
+    overdue = []
+    for task in tasks_with_status(tasks, "active"):
+        if days_until(task, today) < 0:
+            overdue.append(task)
+    return overdue

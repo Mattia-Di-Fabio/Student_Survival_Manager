@@ -1,7 +1,7 @@
 import unittest
 
-from src.filters import tasks_for_module, tasks_with_status
-from tests.examples import example_task
+from src.filters import overdue_tasks, tasks_for_module, tasks_with_status
+from tests.examples import TODAY, example_task
 
 
 class FilterTests(unittest.TestCase):
@@ -21,3 +21,8 @@ class FilterTests(unittest.TestCase):
         matches = tasks_for_module(self.tasks, "science")
         self.assertEqual(matches, [self.late, self.week, self.finished])
         self.assertEqual(tasks_for_module(self.tasks, "Economics"), [])
+
+    def test_overdue_excludes_today_and_completed_tasks(self):
+        finished_late = example_task(6, days=-4, status="completed")
+        self.tasks.append(finished_late)
+        self.assertEqual(overdue_tasks(self.tasks, TODAY), [self.late])

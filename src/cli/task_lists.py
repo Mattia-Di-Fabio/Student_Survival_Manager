@@ -30,3 +30,9 @@ def filter_by_module(tasks):
     matches = filters.tasks_for_module(tasks, MODULES[choice])
     today = date.today()
     return list_text(matches, today, "No matching tasks.")
+
+
+def show_overdue(tasks):
+    today = date.today()
+    overdue = filters.overdue_tasks(tasks, today)
+    return list_text(overdue, today, "No overdue tasks.")

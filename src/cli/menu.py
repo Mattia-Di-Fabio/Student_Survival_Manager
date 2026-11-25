@@ -31,6 +31,7 @@ MENU = {
     "2": ("View completed tasks", task_lists.show_completed),
     "3": ("Add a task", task_forms.add_task),
     "7": ("Filter by module", task_lists.filter_by_module),
+    "8": ("View overdue tasks", task_lists.show_overdue),
 }
 
 
